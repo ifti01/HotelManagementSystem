@@ -1,0 +1,83 @@
+﻿@model HMS.Areas.Dashboard.ViewModels.AccomodationPackageActionModel
+
+@if (Model != null)
+{
+
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">
+                @if (Model.ID > 0)
+                {
+                    <span>Edit AccomodationPackage Type</span>
+                }
+                else
+                {
+
+                    <span>Create AccomodationPackage Type</span>
+                }
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="actionForm">
+                <input type="hidden" name="ID" value="@Model.ID" />
+                <div class="form-group">
+                    <label>Accomodation Type</label>
+                    <select class="form-control" name="AccomodationTypeID">
+                        @if (Model.AccomodationTypes != null)
+                        {
+                            foreach (var accomodationType in Model.AccomodationTypes)
+                            {
+                                <option value="@accomodationType.ID" @(accomodationType.ID == Model.AccomodationTypeID ? "selected" : string.Empty )>
+                                    @accomodationType.Name
+                                </option>   
+                            }
+                        }
+                    </select>
+                    </div>
+                <div class="form-group">
+                    <label>Name</label>
+                    <input class="form-control" name="Name" placeholder="Enter Accomodation PackageType Name" value="@Model.Name">
+                </div>
+                <div class="form-group">
+                    <label>No of Room</label>
+                    <textarea class="form-control" name="NoOfRoom" placeholder="0">@Model.NoOfRoom</textarea>
+                </div>
+                <div class="form-group">
+                    <label>Fee Per Night</label>
+                    <textarea class="form-control" name="FeePerNight" placeholder="0">@Model.FeePerNight</textarea>
+                </div>
+            </form>
+        </div>
+
+        <div class="errorDiv">
+
+        </div>
+        <div class="modal-footer">
+            <button id="actionButton" type="button" class="btn btn-primary"> <i class="fas fa-save mr-1"></i>Save</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-window-close mr-1"></i>Close</button>
+        </div>
+    </div>
+}
+
+<script>
+    $("#actionButton").click(function() {
+            $.ajax({
+                url: '@Url.Action("Action","AccomodationPackages")',
+                type: "post",
+                data: $("#actionForm").serialize()
+        })
+                .done(function (response) {
+                    debugger;
+                if (response.Success) {
+
+                    location.reload();
+                }
+                else {
+                    $(".errorDiv").html(response.Message);
+                }
+            });
+    });
+</script>
